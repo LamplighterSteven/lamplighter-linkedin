@@ -462,6 +462,170 @@
   .h-type-attract { color: var(--attract); }
   .h-type-serve { color: var(--serve); }
   .h-type-sell { color: var(--sell); }
+
+  /* Tab navigation */
+  .tab-nav {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    margin-bottom: 32px;
+    border-bottom: 2px solid var(--paper-border);
+  }
+  .tab-btn {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    padding: 12px;
+    text-align: center;
+    cursor: pointer;
+    background: none;
+    border: none;
+    color: var(--ink-light);
+    border-bottom: 2px solid transparent;
+    margin-bottom: -2px;
+    transition: all 0.15s;
+  }
+  .tab-btn:hover { color: var(--ink); }
+  .tab-btn.active { color: var(--ink); border-bottom-color: var(--gold); font-weight: 600; }
+
+  /* Performance tab */
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+
+  .perf-form {
+    background: white;
+    border: 1px solid var(--paper-border);
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 24px;
+  }
+  .perf-form-body { padding: 20px; display: flex; flex-direction: column; gap: 14px; }
+  .perf-form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .perf-field label {
+    display: block;
+    font-size: 10px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--ink-light);
+    font-weight: 500;
+    margin-bottom: 5px;
+  }
+  .perf-field input, .perf-field select, .perf-field textarea {
+    width: 100%;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    color: var(--ink);
+    background: var(--paper-warm);
+    border: 1px solid var(--paper-border);
+    border-radius: 6px;
+    padding: 9px 12px;
+    transition: border-color 0.15s;
+  }
+  .perf-field input:focus, .perf-field select:focus, .perf-field textarea:focus {
+    outline: none; border-color: var(--gold);
+  }
+  .perf-field textarea { resize: vertical; min-height: 100px; line-height: 1.6; }
+  .perf-field select { cursor: pointer; }
+  .perf-form-footer {
+    padding: 14px 20px;
+    border-top: 1px solid var(--paper-border);
+    background: var(--paper-warm);
+  }
+  .perf-save-btn {
+    width: 100%;
+    background: var(--ink);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 12px;
+    font-family: 'DM Serif Display', serif;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .perf-save-btn:hover { background: #333; }
+
+  /* Performance log */
+  .perf-log { display: flex; flex-direction: column; gap: 10px; margin-bottom: 32px; }
+  .perf-item {
+    background: white;
+    border: 1px solid var(--paper-border);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  .perf-item-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 16px;
+    background: var(--paper-warm);
+    border-bottom: 1px solid var(--paper-border);
+  }
+  .perf-item-body { padding: 12px 16px; }
+  .perf-post-text {
+    font-size: 13px;
+    color: var(--ink-mid);
+    line-height: 1.5;
+    margin-bottom: 10px;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .perf-stats { display: flex; gap: 16px; }
+  .perf-stat { display: flex; flex-direction: column; }
+  .perf-stat-val { font-size: 20px; font-weight: 600; color: var(--ink); line-height: 1; }
+  .perf-stat-lbl { font-size: 10px; color: var(--ink-light); letter-spacing: 0.5px; text-transform: uppercase; margin-top: 2px; }
+  .perf-rate { font-size: 11px; color: var(--ink-light); margin-left: auto; align-self: center; }
+  .perf-rate.good { color: var(--attract); }
+  .perf-rate.ok { color: var(--gold); }
+  .perf-delete-btn {
+    font-size: 11px;
+    color: var(--ink-light);
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 2px 6px;
+    margin-left: auto;
+    transition: color 0.15s;
+  }
+  .perf-delete-btn:hover { color: var(--sell); }
+
+  /* Insights bar */
+  .insights-bar {
+    background: var(--gold-light);
+    border: 1px solid var(--gold);
+    border-radius: 10px;
+    padding: 16px 20px;
+    margin-bottom: 24px;
+    display: none;
+  }
+  .insights-bar.visible { display: block; }
+  .insights-bar-label {
+    font-size: 10px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--ink-light);
+    font-weight: 500;
+    margin-bottom: 10px;
+  }
+  .insights-list { display: flex; flex-direction: column; gap: 6px; }
+  .insights-list li {
+    font-size: 13px;
+    color: var(--ink-mid);
+    line-height: 1.5;
+    padding-left: 16px;
+    position: relative;
+    list-style: none;
+  }
+  .insights-list li::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 7px;
+    width: 5px; height: 5px;
+    border-radius: 50%;
+    background: var(--gold);
+  }
 </style>
 </head>
 <body>
@@ -472,7 +636,14 @@
     <div class="datestamp" id="datestamp"></div>
   </div>
 
-  <!-- Post type -->
+  <!-- Tab nav -->
+  <div class="tab-nav">
+    <button class="tab-btn active" onclick="switchTab('generate', this)">Generate</button>
+    <button class="tab-btn" onclick="switchTab('performance', this)">Performance</button>
+  </div>
+
+  <!-- GENERATE TAB -->
+  <div class="tab-panel active" id="tab-generate">
   <div class="section-label">Post type</div>
   <div class="type-grid">
     <button class="type-btn selected-attract" data-type="attract" onclick="selectType('attract', this)">
@@ -555,6 +726,78 @@
     <div class="section-label" style="margin-bottom:12px;">Prompt history</div>
     <div class="history-list" id="history-list"></div>
   </div>
+
+  </div><!-- end tab-generate -->
+
+  <!-- PERFORMANCE TAB -->
+  <div class="tab-panel" id="tab-performance">
+
+    <!-- Insights summary -->
+    <div class="insights-bar" id="insights-bar">
+      <div class="insights-bar-label">What's working for you</div>
+      <ul class="insights-list" id="insights-list"></ul>
+    </div>
+
+    <!-- Log a post form -->
+    <div class="section-label" style="margin-bottom:10px;">Log a post</div>
+    <div class="perf-form">
+      <div class="perf-form-body">
+        <div class="perf-field">
+          <label>Post copy</label>
+          <textarea id="log-text" placeholder="Paste the full post text here..."></textarea>
+        </div>
+        <div class="perf-form-row">
+          <div class="perf-field">
+            <label>Post type</label>
+            <select id="log-type">
+              <option value="attract">Attract</option>
+              <option value="serve">Serve</option>
+              <option value="sell">Sell</option>
+            </select>
+          </div>
+          <div class="perf-field">
+            <label>Bucket</label>
+            <select id="log-bucket">
+              <option value="Steven">Steven</option>
+              <option value="Lamplighter">Lamplighter</option>
+              <option value="Culture">Culture</option>
+              <option value="Capability">Capability</option>
+              <option value="Careers">Careers</option>
+              <option value="General">General</option>
+            </select>
+          </div>
+        </div>
+        <div class="perf-form-row">
+          <div class="perf-field">
+            <label>Impressions</label>
+            <input type="number" id="log-impressions" placeholder="e.g. 1200" min="0">
+          </div>
+          <div class="perf-field">
+            <label>Engagements</label>
+            <input type="number" id="log-engagements" placeholder="e.g. 48" min="0">
+          </div>
+        </div>
+        <div class="perf-field">
+          <label>Image / media used <span style="font-weight:300;text-transform:none;letter-spacing:0;color:var(--ink-light);font-size:11px;">(optional — e.g. "selfie at event", "branded stat graphic", "no image")</span></label>
+          <input type="text" id="log-image" placeholder="Describe what you attached, or leave blank if none">
+        </div>
+        <div class="perf-field">
+          <label>Date posted</label>
+          <input type="date" id="log-date">
+        </div>
+      </div>
+      <div class="perf-form-footer">
+        <button class="perf-save-btn" onclick="logPost()">Save post</button>
+      </div>
+    </div>
+
+    <!-- Log -->
+    <div class="section-label" style="margin-bottom:10px;">Post log</div>
+    <div class="perf-log" id="perf-log">
+      <div style="font-size:13px;color:var(--ink-light);padding:16px 0;">No posts logged yet — add your first one above.</div>
+    </div>
+
+  </div><!-- end tab-performance -->
 
 </div>
 
@@ -919,7 +1162,161 @@ function getWeekKey() {
   return d.getFullYear() + '-W' + week;
 }
 
-// --- Used / unused tracking ---
+// --- Tab switching ---
+function switchTab(tab, btn) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + tab).classList.add('active');
+  btn.classList.add('active');
+  if (tab === 'performance') renderPerfLog();
+}
+
+// --- Performance logging ---
+function loadPerfLog() {
+  try { const r = localStorage.getItem('ll_perf_log'); return r ? JSON.parse(r) : []; }
+  catch(e) { return []; }
+}
+
+function savePerfLog(log) {
+  try { localStorage.setItem('ll_perf_log', JSON.stringify(log)); } catch(e) {}
+}
+
+function logPost() {
+  const text = document.getElementById('log-text').value.trim();
+  const impressions = parseInt(document.getElementById('log-impressions').value) || 0;
+  const engagements = parseInt(document.getElementById('log-engagements').value) || 0;
+  const type = document.getElementById('log-type').value;
+  const bucket = document.getElementById('log-bucket').value;
+  const image = document.getElementById('log-image').value.trim();
+  const date = document.getElementById('log-date').value || new Date().toISOString().split('T')[0];
+
+  if (!text) { alert('Please paste the post text.'); return; }
+  if (!impressions) { alert('Please enter impressions.'); return; }
+
+  const log = loadPerfLog();
+  log.unshift({ id: Date.now().toString(), text, type, bucket, impressions, engagements, image, date });
+  savePerfLog(log);
+
+  // Reset form
+  document.getElementById('log-text').value = '';
+  document.getElementById('log-impressions').value = '';
+  document.getElementById('log-engagements').value = '';
+  document.getElementById('log-image').value = '';
+  document.getElementById('log-date').value = new Date().toISOString().split('T')[0];
+
+  renderPerfLog();
+}
+
+function deletePerfEntry(id) {
+  const log = loadPerfLog().filter(e => e.id !== id);
+  savePerfLog(log);
+  renderPerfLog();
+}
+
+function engagementRate(e) {
+  return e.impressions > 0 ? ((e.engagements / e.impressions) * 100).toFixed(1) : '0.0';
+}
+
+function renderPerfLog() {
+  const log = loadPerfLog();
+  const container = document.getElementById('perf-log');
+
+  if (!log.length) {
+    container.innerHTML = '<div style="font-size:13px;color:var(--ink-light);padding:16px 0;">No posts logged yet — add your first one above.</div>';
+    document.getElementById('insights-bar').classList.remove('visible');
+    return;
+  }
+
+  // Sort by impressions descending
+  const sorted = [...log].sort((a, b) => b.impressions - a.impressions);
+
+  container.innerHTML = sorted.map(e => {
+    const rate = parseFloat(engagementRate(e));
+    const rateClass = rate >= 3 ? 'good' : rate >= 1.5 ? 'ok' : '';
+    const dateStr = e.date ? new Date(e.date).toLocaleDateString('en-GB', { day:'numeric', month:'short', year:'numeric' }) : '';
+    return '<div class="perf-item">' +
+      '<div class="perf-item-header">' +
+        '<span class="type-pill pill-' + e.type + '">' + e.type + '</span>' +
+        '<span class="bucket-label">' + e.bucket + '</span>' +
+        '<span style="font-size:11px;color:var(--ink-light);margin-left:4px;">' + dateStr + '</span>' +
+        '<button class="perf-delete-btn" onclick="deletePerfEntry(\'' + e.id + '\')">Remove</button>' +
+      '</div>' +
+      '<div class="perf-item-body">' +
+        '<div class="perf-post-text">' + e.text.replace(/</g,'&lt;').replace(/>/g,'&gt;') + '</div>' +
+        (e.image ? '<div style="font-size:11px;color:var(--ink-light);margin-bottom:8px;">📎 ' + e.image + '</div>' : '') +
+        '<div class="perf-stats">' +
+          '<div class="perf-stat"><div class="perf-stat-val">' + e.impressions.toLocaleString() + '</div><div class="perf-stat-lbl">Impressions</div></div>' +
+          '<div class="perf-stat"><div class="perf-stat-val">' + e.engagements.toLocaleString() + '</div><div class="perf-stat-lbl">Engagements</div></div>' +
+          '<div class="perf-rate ' + rateClass + '">' + rate + '% rate</div>' +
+        '</div>' +
+      '</div>' +
+    '</div>';
+  }).join('');
+
+  renderInsights(log);
+}
+
+function renderInsights(log) {
+  if (log.length < 2) { document.getElementById('insights-bar').classList.remove('visible'); return; }
+
+  const insights = [];
+  const sorted = [...log].sort((a, b) => b.impressions - a.impressions);
+  const top = sorted.slice(0, Math.ceil(sorted.length / 2));
+
+  // Best performing type
+  const typeCounts = {};
+  top.forEach(e => { typeCounts[e.type] = (typeCounts[e.type] || 0) + e.impressions; });
+  const bestType = Object.entries(typeCounts).sort((a,b) => b[1]-a[1])[0];
+  if (bestType) insights.push('Your <strong>' + bestType[0] + '</strong> posts are getting the most impressions — lean into these.');
+
+  // Best performing bucket
+  const bucketCounts = {};
+  top.forEach(e => { bucketCounts[e.bucket] = (bucketCounts[e.bucket] || 0) + e.impressions; });
+  const bestBucket = Object.entries(bucketCounts).sort((a,b) => b[1]-a[1])[0];
+  if (bestBucket) insights.push('<strong>' + bestBucket[0] + '</strong> is your strongest bucket by impressions.');
+
+  // Avg engagement rate
+  const avgRate = (log.reduce((s, e) => s + parseFloat(engagementRate(e)), 0) / log.length).toFixed(1);
+  const topRate = (top.reduce((s, e) => s + parseFloat(engagementRate(e)), 0) / top.length).toFixed(1);
+  if (parseFloat(topRate) > parseFloat(avgRate)) {
+    insights.push('Your top posts average a <strong>' + topRate + '% engagement rate</strong> vs ' + avgRate + '% overall — Claude will use these as style anchors when drafting.');
+  }
+
+  // Image pattern insight
+  const withImage = top.filter(e => e.image && e.image.toLowerCase() !== 'no image' && e.image !== '');
+  const withoutImage = top.filter(e => !e.image || e.image.toLowerCase() === 'no image' || e.image === '');
+  if (withImage.length > 0 && withoutImage.length > 0) {
+    const avgWith = withImage.reduce((s,e) => s + e.impressions, 0) / withImage.length;
+    const avgWithout = withoutImage.reduce((s,e) => s + e.impressions, 0) / withoutImage.length;
+    if (avgWith > avgWithout * 1.2) {
+      insights.push('Posts with an image are averaging <strong>' + Math.round(((avgWith/avgWithout)-1)*100) + '% more impressions</strong> than those without.');
+    } else if (avgWithout > avgWith * 1.2) {
+      insights.push('Interestingly, your posts <strong>without an image</strong> are outperforming those with one — worth testing text-only more often.');
+    }
+  } else if (withImage.length > 1) {
+    // Look for patterns in image types
+    const imageTypes = withImage.map(e => e.image.toLowerCase());
+    const hasPersonal = imageTypes.some(t => t.includes('selfie') || t.includes('photo of me') || t.includes('personal'));
+    if (hasPersonal) insights.push('Posts with a personal photo of you appear in your top performers — faces tend to drive stronger reach.');
+  }
+  const list = document.getElementById('insights-list');
+  list.innerHTML = insights.map(i => '<li>' + i + '</li>').join('');
+  bar.classList.add('visible');
+}
+
+// Helper to get top performing posts for draft context
+function getTopPostsContext() {
+  const log = loadPerfLog();
+  if (!log.length) return '';
+  const sorted = [...log].sort((a, b) => b.impressions - a.impressions);
+  const top = sorted.slice(0, 3);
+  return '\n\nSTEVEN\'S TOP PERFORMING POSTS (use these to calibrate his voice, structure and style — these are real posts that got strong results):\n' +
+    top.map((e, i) => {
+      const rate = engagementRate(e);
+      const imageNote = e.image ? ' | Image: ' + e.image : ' | No image';
+      return '\nExample ' + (i+1) + ' [' + e.type + ', ' + e.impressions + ' impressions, ' + rate + '% engagement rate' + imageNote + ']:\n' + e.text;
+    }).join('\n');
+}
 let currentHistoryId = null;
 
 function markCurrentUsed() {
@@ -955,12 +1352,15 @@ async function draftPost() {
   btn.disabled = true;
   btn.classList.add('loading');
 
+  const perfContext = getTopPostsContext();
+
   const draftSystem = "You are writing a LinkedIn post for Steven Miles, founder of Lamplighter Digital, a talent acquisition consultancy focused on the hospitality sector.\n\n" +
     "Steven's voice: warm, direct, conversational, confident without being arrogant. Knowledgeable but writes like a person, not a consultant. No corporate jargon, no buzzwords, no fluff. Short punchy sentences. The first line must stop the scroll — no preamble, no 'I've been thinking about...' openings. He uses line breaks for rhythm. Max 3 hashtags at the end if relevant, otherwise none.\n\n" +
     "ATTRACT posts: personal, human, about Steven as a person. Warm and relatable. Not salesy.\n" +
     "SERVE posts: genuine insight or expertise. Clear point of view. Delivers real value.\n" +
     "SELL posts: clear and direct. Short. Ends with a specific CTA to DM.\n\n" +
-    "Write the full LinkedIn post based on the prompt and guidance. Write it ready to publish — no preamble, no explanation, just the post.";
+    (perfContext ? "Use Steven's top performing posts below to calibrate your writing to match his actual voice, sentence length, structure, and tone. Where image descriptions are included, note what visual media accompanied high-performing posts and factor this into your guidance note at the end — suggest what kind of image would complement this draft. Do not copy the examples — use them as style references only." + perfContext + "\n\n" : "") +
+    "Write the full LinkedIn post based on the prompt and guidance. Write it ready to publish — no preamble, no explanation, just the post. If performance data was provided, add a single line at the very end starting with 📎 suggesting what image or media would work well with this post.";
 
   const draftMsg = "Post type: " + selectedType.toUpperCase() + "\nBucket: " + selectedBucket + "\n\nPrompt: " + prompt + "\nGuidance: " + guidance + "\n\nWrite the full LinkedIn post now.";
 
@@ -1014,6 +1414,7 @@ setDate();
 renderBuckets();
 history = loadHistory();
 renderHistory();
+document.getElementById('log-date').value = new Date().toISOString().split('T')[0];
 </script>
 </body>
 </html>
