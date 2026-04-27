@@ -1257,11 +1257,13 @@ function renderPerfLog() {
 }
 
 function renderInsights(log) {
+  console.log('renderInsights called with', log.length, 'posts');
   if (log.length < 2) { document.getElementById('insights-bar').classList.remove('visible'); return; }
 
   const insights = [];
   const sorted = [...log].sort((a, b) => b.impressions - a.impressions);
   const top = sorted.slice(0, Math.ceil(sorted.length / 2));
+  console.log('top posts:', top.length, 'insights so far:', insights.length);
 
   // Best performing type
   const typeCounts = {};
@@ -1301,6 +1303,7 @@ function renderInsights(log) {
   }
   const bar = document.getElementById('insights-bar');
   const list = document.getElementById('insights-list');
+  console.log('insights generated:', insights.length, 'bar element:', bar);
   list.innerHTML = insights.map(i => '<li>' + i + '</li>').join('');
   bar.classList.add('visible');
 }
