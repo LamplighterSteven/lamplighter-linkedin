@@ -617,6 +617,11 @@ Generate one LinkedIn post prompt for the ${selectedType} category using the ${s
     });
 
     const data = await response.json();
+
+    if (!response.ok || data.error) {
+      throw new Error('Worker/API responded: ' + JSON.stringify(data));
+    }
+
     const raw = data.content?.[0]?.text || '';
     const clean = raw.replace(/```json|```/g, '').trim();
     const parsed = JSON.parse(clean);
@@ -625,7 +630,7 @@ Generate one LinkedIn post prompt for the ${selectedType} category using the ${s
     addToHistory(parsed.prompt, parsed.guidance, parsed.algo || []);
 
   } catch (err) {
-    errorEl.textContent = 'Something went wrong generating your prompt. Check your connection and try again.';
+    errorEl.textContent = 'Error: ' + err.message;
     errorEl.style.display = 'block';
   }
 
