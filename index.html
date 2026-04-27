@@ -1299,6 +1299,7 @@ function renderInsights(log) {
     const hasPersonal = imageTypes.some(t => t.includes('selfie') || t.includes('photo of me') || t.includes('personal'));
     if (hasPersonal) insights.push('Posts with a personal photo of you appear in your top performers — faces tend to drive stronger reach.');
   }
+  const bar = document.getElementById('insights-bar');
   const list = document.getElementById('insights-list');
   list.innerHTML = insights.map(i => '<li>' + i + '</li>').join('');
   bar.classList.add('visible');
