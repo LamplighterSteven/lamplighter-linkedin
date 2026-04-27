@@ -314,6 +314,124 @@
   }
   @keyframes blink { 50% { opacity: 0; } }
 
+  /* Draft post panel */
+  .draft-btn {
+    width: 100%;
+    background: var(--gold-light);
+    color: var(--ink);
+    border: 1px solid var(--gold);
+    border-radius: 8px;
+    padding: 13px;
+    font-family: 'DM Serif Display', serif;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+  }
+  .draft-btn:hover { background: #ecdeb0; }
+  .draft-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+  .draft-spinner {
+    width: 16px; height: 16px;
+    border: 2px solid rgba(0,0,0,0.15);
+    border-top-color: var(--ink);
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+    display: none;
+  }
+  .draft-btn.loading .draft-spinner { display: block; }
+  .draft-btn.loading .draft-label { opacity: 0.7; }
+  .draft-card {
+    background: white;
+    border: 1px solid var(--gold);
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 20px;
+    display: none;
+  }
+  .draft-card.visible { display: block; }
+  .draft-header {
+    padding: 12px 18px;
+    background: var(--gold-light);
+    border-bottom: 1px solid var(--gold);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .draft-header-label {
+    font-size: 10px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--ink-mid);
+    font-weight: 500;
+  }
+  .draft-char-count { font-size: 11px; color: var(--ink-light); }
+  .draft-textarea {
+    width: 100%;
+    padding: 18px 20px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    color: var(--ink);
+    line-height: 1.7;
+    border: none;
+    resize: vertical;
+    min-height: 220px;
+    background: white;
+  }
+  .draft-textarea:focus { outline: none; }
+  .draft-actions {
+    display: flex;
+    gap: 6px;
+    padding: 12px 18px;
+    border-top: 1px solid var(--paper-border);
+    background: var(--paper-warm);
+  }
+
+  /* Used badge */
+  .used-badge {
+    margin-left: auto;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    background: var(--attract-bg);
+    color: var(--attract);
+    border: 1px solid var(--attract);
+    border-radius: 99px;
+    padding: 3px 10px;
+  }
+  .action-btn.mark-used-btn {
+    color: var(--attract);
+    border-color: var(--attract);
+  }
+  .action-btn.mark-used-btn.is-used {
+    background: var(--attract-bg);
+    color: var(--attract);
+    border-color: var(--attract);
+  }
+
+  /* History used/unused */
+  .history-item.used {
+    border-color: var(--attract);
+    background: var(--attract-bg);
+    opacity: 0.75;
+  }
+  .history-item.unused {
+    background: white;
+    border-color: var(--paper-border);
+  }
+  .h-used-dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+  .history-item.used .h-used-dot { background: var(--attract); }
+  .history-item.unused .h-used-dot { background: var(--paper-border); border: 1px solid var(--ink-light); }
+
   /* Error */
   .error-msg {
     background: var(--sell-bg);
@@ -395,6 +513,7 @@
     <div class="output-header">
       <span class="type-pill" id="out-pill">Attract</span>
       <span class="bucket-label" id="out-bucket">Steven</span>
+      <span class="used-badge" id="out-used-badge" style="display:none;">Used</span>
     </div>
     <div class="output-body">
       <div class="prompt-heading" id="out-prompt"></div>
@@ -407,13 +526,33 @@
     <div class="output-actions">
       <button class="action-btn" onclick="copyPrompt()">Copy prompt</button>
       <button class="action-btn" onclick="copyFull()">Copy with guidance</button>
+      <button class="action-btn mark-used-btn" id="mark-used-btn" onclick="markCurrentUsed()">Mark as used</button>
       <button class="action-btn primary" onclick="generate()">Regenerate</button>
+    </div>
+  </div>
+
+  <!-- Draft post -->
+  <button class="draft-btn" id="draft-btn" onclick="draftPost()" style="display:none;">
+    <div class="draft-spinner"></div>
+    <span class="draft-label">✍️ Draft this post for me</span>
+  </button>
+
+  <div class="draft-card" id="draft-card">
+    <div class="draft-header">
+      <span class="draft-header-label">Draft post — edit before publishing</span>
+      <span class="draft-char-count" id="draft-char-count">0 chars</span>
+    </div>
+    <textarea class="draft-textarea" id="draft-textarea" oninput="updateCharCount()" placeholder="Your draft will appear here..."></textarea>
+    <div class="draft-actions">
+      <button class="action-btn" onclick="copyDraft()">Copy post</button>
+      <button class="action-btn mark-used-btn" onclick="markCurrentUsed()">Mark as used</button>
+      <button class="action-btn primary" onclick="draftPost()">Redraft</button>
     </div>
   </div>
 
   <!-- History -->
   <div class="history-section" id="history-section" style="display:none;">
-    <div class="section-label" style="margin-bottom:12px;">Earlier today</div>
+    <div class="section-label" style="margin-bottom:12px;">Prompt history</div>
     <div class="history-list" id="history-list"></div>
   </div>
 
@@ -663,12 +802,35 @@ function showOutput(prompt, guidance, algo) {
   card.style.display = 'block';
   requestAnimationFrame(() => card.classList.add('visible'));
   card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+  // Show draft button, hide previous draft
+  document.getElementById('draft-btn').style.display = 'flex';
+  document.getElementById('draft-card').style.display = 'none';
+
+  // Reset used badge and button for new prompt
+  const badge = document.getElementById('out-used-badge');
+  badge.style.display = 'none';
+  document.querySelectorAll('.mark-used-btn').forEach(b => {
+    b.textContent = 'Mark as used';
+    b.classList.remove('is-used');
+  });
 }
 
 function addToHistory(prompt, guidance, algo) {
-  history.unshift({ type: selectedType, bucket: selectedBucket, prompt, guidance, algo });
-  if (history.length > 5) history.pop();
+  const id = Date.now().toString();
+  currentHistoryId = id;
+  history.unshift({ id, type: selectedType, bucket: selectedBucket, prompt, guidance, algo, used: false });
+  if (history.length > 20) history.pop();
+  saveHistory();
   renderHistory();
+}
+
+function saveHistory() {
+  try { localStorage.setItem('ll_history', JSON.stringify(history)); } catch(e) {}
+}
+
+function loadHistory() {
+  try { const r = localStorage.getItem('ll_history'); return r ? JSON.parse(r) : []; } catch(e) { return []; }
 }
 
 function renderHistory() {
@@ -677,17 +839,56 @@ function renderHistory() {
   if (history.length < 2) { section.style.display = 'none'; return; }
   section.style.display = 'block';
   list.innerHTML = '';
-  history.slice(1).forEach((item, i) => {
+
+  // Sort: unused first, then used (but keep insertion order within each group)
+  const unused = history.slice(1).filter(i => !i.used);
+  const used = history.slice(1).filter(i => i.used);
+  const sorted = [...unused, ...used];
+
+  sorted.forEach(item => {
     const el = document.createElement('div');
-    el.className = 'history-item';
-    el.innerHTML = `<div class="h-meta"><span class="h-type h-type-${item.type}">${item.type}</span><span style="color:var(--ink-light);font-size:11px;">${item.bucket}</span></div><div class="h-text">${item.prompt}</div>`;
-    el.onclick = () => {
+    el.className = 'history-item ' + (item.used ? 'used' : 'unused');
+    el.innerHTML =
+      '<div class="h-meta" style="display:flex;gap:8px;align-items:flex-start;margin-bottom:5px;">' +
+        '<div class="h-used-dot" style="margin-top:4px;"></div>' +
+        '<div style="flex:1;">' +
+          '<div style="display:flex;gap:6px;align-items:center;margin-bottom:3px;">' +
+            '<span class="h-type h-type-' + item.type + '">' + item.type + '</span>' +
+            '<span style="color:var(--ink-light);font-size:10px;">' + item.bucket + '</span>' +
+            '<span style="margin-left:auto;font-size:10px;color:' + (item.used ? 'var(--attract)' : 'var(--ink-light)') + ';">' + (item.used ? '✓ used' : 'unused') + '</span>' +
+          '</div>' +
+          '<div class="h-text">' + item.prompt + '</div>' +
+        '</div>' +
+      '</div>';
+    el.onclick = (e) => {
+      if (e.target.closest('.toggle-used')) return;
       selectedType = item.type;
       selectedBucket = item.bucket;
       showOutput(item.prompt, item.guidance, item.algo || []);
+      // Restore used state in header if applicable
+      if (item.used) {
+        document.getElementById('out-used-badge').style.display = 'inline-block';
+        document.querySelectorAll('.mark-used-btn').forEach(b => {
+          b.textContent = '✓ Used';
+          b.classList.add('is-used');
+        });
+      }
+      currentHistoryId = item.id;
     };
+    el.ondblclick = () => toggleHistoryUsed(item.id);
     list.appendChild(el);
   });
+
+  // Show summary
+  const usedCount = history.filter(i => i.used).length;
+  const total = history.length;
+  const existingSummary = document.getElementById('history-summary');
+  if (existingSummary) existingSummary.remove();
+  const summary = document.createElement('div');
+  summary.id = 'history-summary';
+  summary.style.cssText = 'font-size:11px;color:var(--ink-light);margin-top:8px;text-align:right;';
+  summary.innerHTML = '<strong style="color:var(--ink-mid);">' + usedCount + ' of ' + total + '</strong> prompts used';
+  document.getElementById('history-section').appendChild(summary);
 }
 
 function copyPrompt() {
@@ -708,8 +909,111 @@ function copyFull() {
   setTimeout(() => { btn.textContent = 'Copy with guidance'; }, 1800);
 }
 
+// --- Posted tracker ---
+const DAYS = ['Mon','Tue','Wed','Thu','Fri'];
+
+function getWeekKey() {
+  const d = new Date();
+  const jan1 = new Date(d.getFullYear(), 0, 1);
+  const week = Math.ceil(((d - jan1) / 86400000 + jan1.getDay() + 1) / 7);
+  return d.getFullYear() + '-W' + week;
+}
+
+// --- Used / unused tracking ---
+let currentHistoryId = null;
+
+function markCurrentUsed() {
+  if (!currentHistoryId) return;
+  const item = history.find(i => i.id === currentHistoryId);
+  if (!item) return;
+  item.used = !item.used;
+  saveHistory();
+  renderHistory();
+  const badge = document.getElementById('out-used-badge');
+  badge.style.display = item.used ? 'inline-block' : 'none';
+  document.querySelectorAll('.mark-used-btn').forEach(b => {
+    b.textContent = item.used ? '✓ Used' : 'Mark as used';
+    b.classList.toggle('is-used', item.used);
+  });
+}
+
+function toggleHistoryUsed(id) {
+  const item = history.find(i => i.id === id);
+  if (!item) return;
+  item.used = !item.used;
+  saveHistory();
+  renderHistory();
+}
+
+// --- Draft post ---
+async function draftPost() {
+  const prompt = document.getElementById('out-prompt').textContent;
+  const guidance = document.getElementById('out-guidance').textContent;
+  if (!prompt) return;
+
+  const btn = document.getElementById('draft-btn');
+  btn.disabled = true;
+  btn.classList.add('loading');
+
+  const draftSystem = "You are writing a LinkedIn post for Steven Miles, founder of Lamplighter Digital, a talent acquisition consultancy focused on the hospitality sector.\n\n" +
+    "Steven's voice: warm, direct, conversational, confident without being arrogant. Knowledgeable but writes like a person, not a consultant. No corporate jargon, no buzzwords, no fluff. Short punchy sentences. The first line must stop the scroll — no preamble, no 'I've been thinking about...' openings. He uses line breaks for rhythm. Max 3 hashtags at the end if relevant, otherwise none.\n\n" +
+    "ATTRACT posts: personal, human, about Steven as a person. Warm and relatable. Not salesy.\n" +
+    "SERVE posts: genuine insight or expertise. Clear point of view. Delivers real value.\n" +
+    "SELL posts: clear and direct. Short. Ends with a specific CTA to DM.\n\n" +
+    "Write the full LinkedIn post based on the prompt and guidance. Write it ready to publish — no preamble, no explanation, just the post.";
+
+  const draftMsg = "Post type: " + selectedType.toUpperCase() + "\nBucket: " + selectedBucket + "\n\nPrompt: " + prompt + "\nGuidance: " + guidance + "\n\nWrite the full LinkedIn post now.";
+
+  try {
+    const response = await fetch("https://linkedin-prompt-proxy.steven-6f9.workers.dev/", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        model: "claude-sonnet-4-5",
+        max_tokens: 1000,
+        system: draftSystem,
+        messages: [{ role: "user", content: draftMsg }]
+      })
+    });
+    const data = await response.json();
+    if (!response.ok || data.error) throw new Error(JSON.stringify(data));
+    const draft = data.content?.[0]?.text || '';
+    const ta = document.getElementById('draft-textarea');
+    ta.value = draft;
+    updateCharCount();
+    const card = document.getElementById('draft-card');
+    card.style.display = 'block';
+    card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  } catch(e) {
+    const errorEl = document.getElementById('error-msg');
+    errorEl.textContent = 'Draft error: ' + e.message;
+    errorEl.style.display = 'block';
+  }
+
+  btn.disabled = false;
+  btn.classList.remove('loading');
+}
+
+function updateCharCount() {
+  const ta = document.getElementById('draft-textarea');
+  const count = ta.value.length;
+  const el = document.getElementById('draft-char-count');
+  el.textContent = count + ' chars';
+  el.style.color = count > 3000 ? 'var(--sell)' : count > 2000 ? 'var(--gold)' : 'var(--ink-light)';
+}
+
+function copyDraft() {
+  navigator.clipboard.writeText(document.getElementById('draft-textarea').value);
+  const btn = event.target;
+  btn.textContent = 'Copied!';
+  btn.classList.add('copied');
+  setTimeout(() => { btn.textContent = 'Copy post'; btn.classList.remove('copied'); }, 1800);
+}
+
 setDate();
 renderBuckets();
+history = loadHistory();
+renderHistory();
 </script>
 </body>
 </html>
